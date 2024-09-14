@@ -1,0 +1,6 @@
+.play {
+    display:flex
+}
+.play a {
+    display: inline;
+}
