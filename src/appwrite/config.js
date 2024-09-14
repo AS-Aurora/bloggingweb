@@ -80,6 +80,14 @@ export class Service {
             id
         ).href
     }
+
+    async downloadFile(id) {
+        try {
+            return await this.bucket.getFileDownload(conf.appwriteBucketId, id)
+        } catch (error) {
+            console.log('Appwrite downloadFile error', error)
+        }
+    }
 }
 
 const service = new Service()
