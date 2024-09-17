@@ -5,11 +5,13 @@ export class Service {
     client = new Client()
     databases
     bucket
+    jwtToken
 
     constructor() {
         this.client.setEndpoint(conf.apprwriteUrl).setProject(conf.appwriteProjectId)
         this.databases = new Databases(this.client)
         this.bucket = new Storage(this.client)
+        this.jwtToken = localStorage.getItem('jwtToken')
     }
 
     async getDocument(slug) {
@@ -29,8 +31,19 @@ export class Service {
         }
     }
     async createDocument({title, content, featuredImage, status, userId, slug}) {
+        const jwtToken = localStorage.getItem('jwtToken');
+        if (!jwtToken) {
+            console.log("User is not authenticated");
+            return null;
+        }
+        
         try {
-            return await this.databases.createDocument(conf.appwriteDatabaseId, conf.appwriteCollectionId, slug, {title, content, featuredImage, status, userId})
+            return await this.databases.createDocument(conf.appwriteDatabaseId,
+                conf.appwriteCollectionId,
+                slug,
+                {title, content, featuredImage, status, userId}
+
+            )
         } catch (error) {
             console.log('Appwrite createDocument error', error)
             return null
@@ -53,6 +66,24 @@ export class Service {
             console.log('Appwrite deleteDocument error', error)
             return null
         }
+    }
+    async authentication(token) {
+        try {
+            this.jwtToken = token
+            localStorage.setItem('jwtToken', token)
+            return true
+        } catch (error) {
+            console.log('Appwrite authentication error', error);
+            return null
+        }
+    }
+    async getAuthenticatedClient() {
+        if(!this.jwtToken) {
+            console.log("User is not authenticated");
+            return null;
+        }
+        this.client.setJWT(this.jwtToken)
+        return this.client
     }
     
 

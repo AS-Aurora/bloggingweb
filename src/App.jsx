@@ -4,14 +4,16 @@ import viteLogo from '/vite.svg'
 // import './App.css'
 import SlidingBanner from './components/SlidingBanner'
 import Header from './components/header/Header'
+import { Outlet } from 'react-router-dom'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-      {/* <Header /> */}
-      {/* <SlidingBanner /> */}
+      <Outlet />
+      <Header />
+      <SlidingBanner />
 
     </>
   )

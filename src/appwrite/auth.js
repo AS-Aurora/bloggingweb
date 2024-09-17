@@ -48,17 +48,35 @@ export class AuthService {
             console.log("Appwrite service error: ", error)
         }
     }
-    async createJWT() {
+    async creatingJWT() {
         try {
-            return await this.account.createJWT()
+            const jwtResponse = await this.account.createJWT()
+            const jwtToken = jwtResponse.jwt
+            localStorage.setItem("jwtToken", jwtToken);
+            return jwtToken
         } catch (error) {
             console.log("Appwrite service error: ", error)
             return null
         }
     }
-}
+
+    isAuthenticated() {
+        const jwtToken = localStorage.getItem("jwtToken");
+        return !!jwtToken;
+      }
+    
+      getToken() {
+        return localStorage.getItem("jwtToken");
+      }
+    
+      logout() {
+        localStorage.removeItem("jwtToken");
+      }
+    }
 
 const authService = new AuthService()
 const jwtToken = await authService.createJWT()
+if (jwtToken) {
+}
 
 export default authService
